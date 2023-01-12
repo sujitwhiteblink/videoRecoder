@@ -20,6 +20,7 @@ export default function App3() {
   const [framerate, setFramerate] = useState()
   const [creationTime, setCreationTime] = useState()
   const [date, setDate] = useState()
+  const [blob1, setBlob1] = useState(null);
 
 
   const readAsArrayBuffer = (blob) => {
@@ -82,6 +83,20 @@ export default function App3() {
       console.log("no stream to record");
       return;
     }
+
+    let mimeType;
+    if (MediaRecorder.isTypeSupported('video/webm; codecs=vp9,opus')) {
+        mimeType = 'video/webm; codecs=vp9,opus';
+    } else if (MediaRecorder.isTypeSupported('video/webm; codecs=vp9')) {
+        mimeType = 'video/webm; codecs=vp9';
+    } else if (MediaRecorder.isTypeSupported('video/webm')) {
+        mimeType = 'video/webm';
+    }else {
+        mimeType = 'video/webm; codecs=vp8 ';
+    }
+    console.log("mimetype", mimeType)
+
+
     
     let options = {
       type: "video",
@@ -91,7 +106,7 @@ export default function App3() {
       },
       frameInterval: 1,
       frameRate:30,
-      mimeType: "video/webm"
+      mimeType: mimeType
     };
     
     // Create a new MediaRecorder
@@ -110,6 +125,7 @@ export default function App3() {
   function startRecoding() {
     setRecordedChunks([]);
     recorder.start();
+    // recorder.startRecording();
     setIsRecording(true);
     if(btnDisabled == false){
       setBtnDisabled(true)
